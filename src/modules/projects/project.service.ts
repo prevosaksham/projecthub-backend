@@ -306,6 +306,7 @@ export const getIncompleteProjectCountForUserService = async (
   return prisma.project.count({
     where: {
       isDeleted: false,
+      isEnabled: true,
       isSetupCompleted: false,
       OR: [
         {
