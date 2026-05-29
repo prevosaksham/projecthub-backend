@@ -1,0 +1,17 @@
+ALTER TABLE "projects"
+ALTER COLUMN "description" DROP NOT NULL;
+
+ALTER TABLE "projects"
+ALTER COLUMN "clientName" DROP NOT NULL;
+
+ALTER TABLE "projects"
+ALTER COLUMN "endDate" DROP NOT NULL;
+
+ALTER TABLE "projects"
+ALTER COLUMN "devUrl" DROP NOT NULL;
+
+ALTER TABLE "projects"
+ALTER COLUMN "uatUrl" DROP NOT NULL;
+
+ALTER TABLE "projects"
+ALTER COLUMN "prodUrl" DROP NOT NULL;
