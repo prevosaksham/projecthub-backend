@@ -8,9 +8,7 @@ async function bootstrap(): Promise<void> {
 
   const app = createApp();
   const server = app.listen(env.PORT, () => {
-    logger.info(
-      `Server running at http://localhost:${env.PORT} [${env.NODE_ENV}]`,
-    );
+    logger.info(`Server running at http://localhost:${env.PORT}`);
   });
 
   const shutdown = async (signal: string) => {
