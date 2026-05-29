@@ -1,0 +1,53 @@
+name: Deploy ProjectHub Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to UAT Server
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GCP_VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          ssh-keyscan -H ${{ secrets.GCP_VM_HOST }} >> ~/.ssh/known_hosts
+
+          ssh ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_HOST }} << 'EOF'
+
+            set -e
+
+            echo "🚀 Starting ProjectHub Backend Deploy"
+
+            cd /var/www/project-hub/backend
+
+            echo "📥 Pulling latest code..."
+            sudo git fetch origin
+            sudo git reset --hard origin/main
+
+            echo "📦 Installing dependencies..."
+            sudo npm install
+
+            echo "🧬 Generating Prisma client..."
+            sudo npx prisma generate
+
+            echo "🗄️ Running Prisma migrations..."
+            sudo npx prisma migrate deploy
+
+            echo "🧹 Cleaning old dist..."
+            sudo rm -rf dist
+
+            echo "🏗️ Building backend..."
+            sudo npm run build
+
+            echo "🔄 Restarting PM2..."
+            sudo /usr/local/bin/pm2 restart projecthub
+
+            echo "✅ ProjectHub Backend Deployment Completed"
+
+          EOF
