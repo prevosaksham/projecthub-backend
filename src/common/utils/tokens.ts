@@ -6,25 +6,25 @@ type TokenPayload = {
 };
 
 export const generateAccessToken = (payload: TokenPayload) => {
-  return jwt.sign(
-    payload,
+  const secret = process.env.JWT_SECRET;
+  const expiresIn = process.env.JWT_EXPIRES_IN;
 
-    process.env.JWT_SECRET!,
+  if (!secret) throw new Error("JWT_SECRET is missing");
+  if (!expiresIn) throw new Error("JWT_EXPIRES_IN is missing");
 
-    {
-      expiresIn: "5h",
-    },
-  );
+  return jwt.sign(payload, secret, {
+    expiresIn: expiresIn as jwt.SignOptions["expiresIn"],
+  });
 };
 
 export const generateRefreshToken = (payload: TokenPayload) => {
-  return jwt.sign(
-    payload,
+  const secret = process.env.JWT_REFRESH_SECRET;
+  const expiresIn = process.env.JWT_REFRESH_EXPIRES_IN;
 
-    process.env.JWT_REFRESH_SECRET!,
+  if (!secret) throw new Error("JWT_REFRESH_SECRET is missing");
+  if (!expiresIn) throw new Error("JWT_REFRESH_EXPIRES_IN is missing");
 
-    {
-      expiresIn: "7d",
-    },
-  );
+  return jwt.sign(payload, secret, {
+    expiresIn: expiresIn as jwt.SignOptions["expiresIn"],
+  });
 };
