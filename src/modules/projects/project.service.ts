@@ -263,7 +263,10 @@ export const getProjectByIdService = async (
     currentUser.role === "ADMIN" ||
     (currentUser.role === "LEADERSHIP" &&
       project.createdBy.id === currentUser.id);
-  return project;
+  return {
+    ...project,
+    canManageMembers,
+  };
 };
 
 export const deleteProjectService = async (projectId: string) => {
