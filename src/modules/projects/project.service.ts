@@ -150,7 +150,10 @@ export const getAllProjectsService = async (
     projects,
   };
 };
-export const getProjectByIdService = async (projectId: string) => {
+export const getProjectByIdService = async (
+  projectId: string,
+  currentUser: { id: string; role: string },
+) => {
   const project = await prisma.project.findFirst({
     where: {
       id: projectId,
@@ -173,7 +176,6 @@ export const getProjectByIdService = async (projectId: string) => {
       createdAt: true,
       updatedAt: true,
 
-      // ✅ Documents
       documents: {
         where: {
           isDeleted: false,
@@ -191,7 +193,7 @@ export const getProjectByIdService = async (projectId: string) => {
         },
       },
 
-      // ✅ Assigned Users (Project Members)
+      // Assigned Users
       members: {
         where: {
           isDeleted: false,
@@ -257,7 +259,10 @@ export const getProjectByIdService = async (projectId: string) => {
   if (!project) {
     throw new ApiError(StatusCodes.NOT_FOUND, "Project not found");
   }
-
+  const canManageMembers =
+    currentUser.role === "ADMIN" ||
+    (currentUser.role === "LEADERSHIP" &&
+      project.createdBy.id === currentUser.id);
   return project;
 };
 

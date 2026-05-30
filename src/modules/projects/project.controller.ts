@@ -102,7 +102,8 @@ export const deleteProject = catchAsync(async (req: Request, res: Response) => {
 export const getProjectById = catchAsync(
   async (req: Request, res: Response) => {
     const projectId = req.params.id;
-    const project = await getProjectByIdService(projectId);
+    const user = req.user as { id: string; role: string };
+    const project = await getProjectByIdService(projectId, user);
     return res
       .status(StatusCodes.OK)
       .json(
