@@ -1,4 +1,4 @@
-import "module-alias/register";
+// import "module-alias/register";
 import { createApp } from "./app";
 import { env } from "./config/env";
 import { connectDatabase, disconnectDatabase } from "./db/prisma";

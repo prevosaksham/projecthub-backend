@@ -3,12 +3,9 @@
   "version": "1.0.0",
   "description": "Project Hub backend API (Express + TypeScript + Prisma)",
   "main": "dist/server.js",
-  "_moduleAliases": {
-    "@": "dist"
-  },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && tsc-alias",
     "start": "node dist/server.js",
     "lint": "eslint \"src/**/*.ts\"",
     "prisma:generate": "prisma generate",
@@ -46,6 +43,7 @@
     "@types/node": "^22.9.0",
     "prisma": "^5.22.0",
     "ts-node-dev": "^2.0.0",
+    "tsc-alias": "^1.8.17",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.3"
   }
