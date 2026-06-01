@@ -11,60 +11,6 @@ import { StatusCodes } from "http-status-codes";
 import { formatFileSize, isProjectFullyFilled } from "@/common/utils/constants";
 import { Role } from "@prisma/client";
 
-export const createProjectService = async (
-  data: CreateProjectInput,
-  createdById: string,
-) => {
-  const project = await prisma.project.create({
-    data: {
-      name: data.name,
-      description: data.description ?? null,
-      status: data.status,
-      priority: data.priority,
-      clientName: data.clientName ?? null,
-      startDate: data.startDate,
-      endDate: data.endDate ?? null,
-      devUrl: data.devUrl ?? null,
-      uatUrl: data.uatUrl ?? null,
-      prodUrl: data.prodUrl ?? null,
-      developers: data.developers ?? [],
-
-      createdById,
-    },
-  });
-  return project;
-};
-
-export const updateProjectService = async (
-  projectId: string,
-  data: UpdateProjectInput,
-) => {
-  const existingProject = await prisma.project.findFirst({
-    where: {
-      id: projectId,
-      isDeleted: false,
-    },
-  });
-  if (!existingProject) {
-    throw new ApiError(StatusCodes.NOT_FOUND, "Project not found");
-  }
-  if (Object.keys(data).length === 0) {
-    throw new ApiError(StatusCodes.NOT_FOUND, "No data provided for update");
-  }
-  const updatedProject = await prisma.project.update({
-    where: {
-      id: projectId,
-    },
-    data: {
-      ...data,
-    },
-    include: {
-      documents: true,
-    },
-  });
-  return updatedProject;
-};
-
 export const getAllProjectsService = async (
   user: { id: string; role: string },
   page: number = 1,
@@ -292,22 +238,6 @@ export const deleteProjectService = async (projectId: string) => {
   return deletedProject;
 };
 
-export const getProjectByManagerIdService = async (managerId: string) => {
-  const projects = await prisma.project.findMany({
-    where: {
-      createdById: managerId,
-      isDeleted: false,
-    },
-    include: {
-      documents: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-  return projects;
-};
-
 export const getIncompleteProjectCountForUserService = async (
   userId: string,
 ) => {
@@ -341,14 +271,6 @@ export const createProjectWithDocumentsService = async (
   createdById: string,
   assignedUsers: string[] = [],
 ) => {
-  // Validate documents
-  // if (!files || files.length === 0) {
-  //   throw new ApiError(
-  //     StatusCodes.BAD_REQUEST,
-  //     "At least one document is required",
-  //   );
-  // }
-
   return prisma.$transaction(async (tx) => {
     const isSetupCompleted =
       isProjectFullyFilled(projectData) &&
@@ -362,7 +284,7 @@ export const createProjectWithDocumentsService = async (
         status: projectData.status,
         priority: projectData.priority,
         clientName: projectData.clientName ?? null,
-        startDate: projectData.startDate,
+        startDate: projectData.startDate ?? null,
         endDate: projectData.endDate ?? null,
         devUrl: projectData.devUrl ?? null,
         uatUrl: projectData.uatUrl ?? null,

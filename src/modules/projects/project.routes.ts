@@ -14,7 +14,6 @@ import {
 import {
   assignUsersToProject,
   completeProjectWithDocuments,
-  createProject,
   createProjectRemark,
   createProjectWithDocuments,
   deassignUserFromProject,
@@ -23,9 +22,7 @@ import {
   getAssignableUsers,
   getIncompleteProjectCountForUser,
   getProjectById,
-  getProjectByManagerId,
   toggleProject,
-  updateProject,
   updateProjectWithDocuments,
 } from "./project.controller";
 import { upload } from "./upload.middleware";
@@ -33,22 +30,6 @@ import { parseProjectBody } from "@/common/utils/constants";
 import { ROLES } from "@/common/utils/roles";
 
 const router = Router();
-
-router.post(
-  "/create",
-  authMiddleware,
-  authorize("MANAGER"),
-  validate(createProjectSchema),
-  createProject,
-);
-router.patch(
-  "/:id/update",
-  authMiddleware,
-  authorize("MANAGER"),
-  validate(updateProjectSchema),
-  updateProject,
-);
-
 router.get(
   "/projects",
   authMiddleware,
@@ -66,13 +47,6 @@ router.get(
   authMiddleware,
   authorize("MANAGER", ROLES.ADMIN, ROLES.LEADERSHIP),
   getProjectById,
-);
-
-router.get(
-  "/manager/projects",
-  authMiddleware,
-  authorize("MANAGER"),
-  getProjectByManagerId,
 );
 
 router.get(

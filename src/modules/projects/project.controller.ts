@@ -6,7 +6,6 @@ import {
   assignMembersToProjectServiceNew,
   completeProjectWithDocumentsService,
   createProjectRemarkService,
-  createProjectService,
   createProjectWithDocumentsService,
   deassignUserFromProjectService,
   deleteProjectService,
@@ -14,47 +13,12 @@ import {
   getAssignableUsersService,
   getIncompleteProjectCountForUserService,
   getProjectByIdService,
-  getProjectByManagerIdService,
   toggleProjectService,
-  updateProjectService,
   updateProjectWithDocumentsService,
 } from "./project.service";
 import ApiResponse from "@/utils/ApiResponse";
 import { createProjectSchema } from "./project.validation";
 import { getLeadershipUsersService } from "../users/user.service";
-export const createProject = catchAsync(async (req: Request, res: Response) => {
-  const createdById = req.user?.id;
-  if (!createdById) {
-    throw new ApiError(
-      StatusCodes.UNAUTHORIZED,
-      "Admin authentication required",
-    );
-  }
-  const newProject = await createProjectService(req.body, createdById);
-  return res
-    .status(StatusCodes.CREATED)
-    .json(
-      new ApiResponse(
-        StatusCodes.CREATED,
-        "Project created successfully",
-        newProject,
-      ),
-    );
-});
-
-export const updateProject = catchAsync(async (req: Request, res: Response) => {
-  const projectId = req.params.id;
-  const updatedProject = await updateProjectService(projectId, req.body);
-  return res
-    .status(StatusCodes.OK)
-    .json(
-      new ApiResponse(
-        StatusCodes.OK,
-        "Project updated successfully",
-        updatedProject,
-      ),
-    );
-});
 
 export const getAllProjects = catchAsync(
   async (req: Request, res: Response) => {
@@ -63,7 +27,7 @@ export const getAllProjects = catchAsync(
     const search = (req.query.search as string) || "";
     const user = req.user as {
       id: string;
-      role: "ADMIN" | "MANAGER" | "LEADERSHIP";
+      role: "ADMIN" | "MANAGER" | "LEADERSHIP" | "SUPER_ADMIN";
     };
     const projectsData = await getAllProjectsService(
       user,
@@ -111,28 +75,6 @@ export const getProjectById = catchAsync(
           StatusCodes.OK,
           "Project fetched successfully",
           project,
-        ),
-      );
-  },
-);
-
-export const getProjectByManagerId = catchAsync(
-  async (req: Request, res: Response) => {
-    const managerId = req.user?.id;
-    if (!managerId) {
-      throw new ApiError(
-        StatusCodes.UNAUTHORIZED,
-        "Manager authentication required",
-      );
-    }
-    const projectsData = await getProjectByManagerIdService(managerId);
-    return res
-      .status(StatusCodes.OK)
-      .json(
-        new ApiResponse(
-          StatusCodes.OK,
-          "Projects fetched successfully",
-          projectsData,
         ),
       );
   },

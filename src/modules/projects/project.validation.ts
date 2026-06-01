@@ -16,7 +16,7 @@ export const createProjectSchema = z
 
     clientName: z.string().optional().nullable(),
 
-    startDate: z.coerce.date(),
+    startDate: z.coerce.date().optional().nullable(),
 
     endDate: z.coerce.date().optional().nullable(),
 
@@ -30,7 +30,8 @@ export const createProjectSchema = z
   })
   .refine(
     (data) => {
-      if (!data.endDate) return true;
+      if (!data.endDate || !data.startDate) return true;
+
       return data.endDate >= data.startDate;
     },
     {

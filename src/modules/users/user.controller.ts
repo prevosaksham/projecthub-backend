@@ -10,7 +10,6 @@ import {
   getUserByIdService,
   toggleUserService,
 } from "./user.service";
-import { updateProjectService } from "../projects/project.service";
 export const findAllUsers = catchAsync(async (req: Request, res: Response) => {
   const addedById = req.user?.id;
   if (!addedById) {

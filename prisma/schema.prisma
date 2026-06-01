@@ -9,6 +9,7 @@ datasource db {
 
 // ================== ENUMS ==================
 enum Role {
+  SUPER_ADMIN
   ADMIN
   MANAGER
   LEADERSHIP
@@ -77,7 +78,7 @@ model Project {
   status      ProjectStatus   @default(PLANNING)
   priority    ProjectPriority @default(MEDIUM)
   clientName  String?
-  startDate   DateTime
+  startDate   DateTime?
   endDate     DateTime?
   devUrl      String?
   uatUrl      String?
