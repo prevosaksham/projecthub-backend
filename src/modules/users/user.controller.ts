@@ -21,7 +21,8 @@ export const findAllUsers = catchAsync(async (req: Request, res: Response) => {
   }
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
-  const newProject = await findAllUsersService(addedById, page, limit);
+  const search = req.query.search as string | undefined;
+  const newProject = await findAllUsersService(addedById, page, limit, search);
   return res
     .status(StatusCodes.OK)
     .json(

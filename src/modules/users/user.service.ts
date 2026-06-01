@@ -2,7 +2,12 @@ import { prisma } from "@/db/prisma";
 import ApiError from "@/utils/ApiError";
 import { StatusCodes } from "http-status-codes";
 
-export const findAllUsersService = async (id: string, page = 1, limit = 10) => {
+export const findAllUsersService = async (
+  id: string,
+  page = 1,
+  limit = 10,
+  search?: string,
+) => {
   const skip = (page - 1) * limit;
 
   const [users, total] = await prisma.$transaction([
@@ -10,6 +15,19 @@ export const findAllUsersService = async (id: string, page = 1, limit = 10) => {
       where: {
         addedById: id,
         isDeleted: false,
+        ...(search && {
+          OR: [
+            { name: { contains: search as string, mode: "insensitive" } },
+            { email: { contains: search as string, mode: "insensitive" } },
+            { empId: { contains: search as string, mode: "insensitive" } },
+            {
+              mobileNumber: { contains: search as string, mode: "insensitive" },
+            },
+            {
+              designation: { contains: search as string, mode: "insensitive" },
+            },
+          ],
+        }),
       },
       skip,
       take: limit,
