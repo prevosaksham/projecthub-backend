@@ -64,7 +64,7 @@ router.delete(
 router.get(
   "/:id/project",
   authMiddleware,
-  authorize("MANAGER", ROLES.ADMIN),
+  authorize("MANAGER", ROLES.ADMIN, ROLES.LEADERSHIP),
   getProjectById,
 );
 
