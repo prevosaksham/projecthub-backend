@@ -1,31 +1,53 @@
+import { ROLES } from "@/common/utils/roles";
 import { prisma } from "@/db/prisma";
 import ApiError from "@/utils/ApiError";
+import { Prisma } from "@prisma/client";
 import { StatusCodes } from "http-status-codes";
 
 export const findAllUsersService = async (
-  id: string,
+  addedByUser: any,
   page = 1,
   limit = 10,
   search?: string,
 ) => {
   const skip = (page - 1) * limit;
+  const isSuperAdmin = addedByUser?.role === ROLES.SUPER_ADMIN;
 
+  const whereClause = {
+    isDeleted: false,
+    ...(isSuperAdmin ? {} : { addedById: addedByUser?.id }),
+    ...(search && {
+      OR: [
+        {
+          name: {
+            contains: search as string,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        },
+        {
+          email: {
+            contains: search as string,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        },
+        {
+          empId: {
+            contains: search as string,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        },
+        {
+          mobileNumber: {
+            contains: search as string,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        },
+      ],
+    }),
+  };
   const [users, total] = await prisma.$transaction([
     prisma.user.findMany({
-      where: {
-        addedById: id,
-        isDeleted: false,
-        ...(search && {
-          OR: [
-            { name: { contains: search as string, mode: "insensitive" } },
-            { email: { contains: search as string, mode: "insensitive" } },
-            { empId: { contains: search as string, mode: "insensitive" } },
-            {
-              mobileNumber: { contains: search as string, mode: "insensitive" },
-            },
-          ],
-        }),
-      },
+      where: whereClause,
       skip,
       take: limit,
       orderBy: {
@@ -43,10 +65,7 @@ export const findAllUsersService = async (
     }),
 
     prisma.user.count({
-      where: {
-        addedById: id,
-        isDeleted: false,
-      },
+      where: whereClause,
     }),
   ]);
 

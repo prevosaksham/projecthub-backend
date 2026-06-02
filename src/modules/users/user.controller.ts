@@ -11,8 +11,8 @@ import {
   toggleUserService,
 } from "./user.service";
 export const findAllUsers = catchAsync(async (req: Request, res: Response) => {
-  const addedById = req.user?.id;
-  if (!addedById) {
+  const addedByUser = req.user as any;
+  if (!addedByUser) {
     throw new ApiError(
       StatusCodes.UNAUTHORIZED,
       "Admin authentication required",
@@ -21,7 +21,12 @@ export const findAllUsers = catchAsync(async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const search = req.query.search as string | undefined;
-  const newProject = await findAllUsersService(addedById, page, limit, search);
+  const newProject = await findAllUsersService(
+    addedByUser,
+    page,
+    limit,
+    search,
+  );
   return res
     .status(StatusCodes.OK)
     .json(
