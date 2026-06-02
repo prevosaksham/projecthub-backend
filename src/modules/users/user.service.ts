@@ -23,9 +23,6 @@ export const findAllUsersService = async (
             {
               mobileNumber: { contains: search as string, mode: "insensitive" },
             },
-            {
-              designation: { contains: search as string, mode: "insensitive" },
-            },
           ],
         }),
       },
@@ -40,7 +37,6 @@ export const findAllUsersService = async (
         email: true,
         empId: true,
         role: true,
-        designation: true,
         mobileNumber: true,
         isEnabled: true,
 
@@ -92,7 +88,6 @@ export const findUserByIdService = async (userId: string) => {
       name: true,
       email: true,
       empId: true,
-      designation: true,
       mobileNumber: true,
     },
   });
@@ -111,7 +106,6 @@ export const findUserByProjectService = async (userId: string) => {
       email: true,
       role: true,
       empId: true,
-      designation: true,
       mobileNumber: true,
       createdProjects: {
         take: 20,
@@ -166,7 +160,6 @@ export const getUserByIdService = async (userId: string) => {
       email: true,
       role: true,
       empId: true,
-      designation: true,
       mobileNumber: true,
 
       // ✅ Assigned Projects

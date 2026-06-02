@@ -155,7 +155,6 @@ export const getProjectByIdService = async (
               email: true,
               role: true,
               empId: true,
-              designation: true,
               isEnabled: true,
             },
           },

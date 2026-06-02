@@ -4,7 +4,6 @@ export const editProfileSchema = z
   .object({
     name: z.string().min(2).optional(),
     mobileNumber: z.string().min(10).max(15).optional(),
-    designation: z.string().min(2).optional(),
   })
   .strict();
 

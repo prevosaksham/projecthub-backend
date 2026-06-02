@@ -19,7 +19,6 @@ export const getProfileService = async (userId: string) => {
       email: true,
       empId: true,
       mobileNumber: true,
-      designation: true,
       role: true,
     },
   });
@@ -44,7 +43,6 @@ export const editProfileService = async (
       email: true,
       empId: true,
       mobileNumber: true,
-      designation: true,
       role: true,
       isEnabled: true,
     },
