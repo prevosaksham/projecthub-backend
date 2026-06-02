@@ -35,6 +35,7 @@ export const getAllProjectsService = async (
   if (user.role === "ADMIN") {
     whereClause = {
       ...whereClause,
+      createdById: user.id,
     };
   } else if (user.role === "LEADERSHIP") {
     whereClause = {
