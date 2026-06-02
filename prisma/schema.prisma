@@ -39,7 +39,7 @@ model User {
   role        Role   @default(MANAGER)
   password    String
   empId       String @unique
-  designation String
+
 
   isEnabled Boolean @default(true)
   isDeleted Boolean @default(false)

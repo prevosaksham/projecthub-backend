@@ -14,7 +14,6 @@ export const createUserSchema = z.object({
   empId: z.string().regex(/^PIS\d{4,5}$/, {
     message: "EmpId must be in format PIS + digits  (e.g., PIS1001,PIS10001)",
   }),
-  designation: z.string().trim().min(1, "Designation is required"),
   mobileNumber: z
     .string()
     .trim()
