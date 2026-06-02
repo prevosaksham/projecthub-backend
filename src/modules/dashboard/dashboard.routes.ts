@@ -12,7 +12,7 @@ const router = Router();
 router.get(
   "/",
   authMiddleware,
-  authorize(ROLES.SUPER_ADMIN, "ADMIN", "MANAGER"),
+  authorize(ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.MANAGER, ROLES.LEADERSHIP),
   getDashboard,
 );
 

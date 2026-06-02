@@ -1,11 +1,16 @@
+import { ROLES } from "@/common/utils/roles";
 import { prisma } from "@/db/prisma";
 
 export const getDashboardService = async (user: any) => {
   // BASE FILTER
   const projectFilter: any = {
     isDeleted: false,
+    isEnabled: true,
   };
-  if (user.role === "MANAGER") {
+  if (user.role === ROLES.ADMIN) {
+    projectFilter.createdById = user.id;
+  }
+  if (user.role === ROLES.MANAGER) {
     // Only assigned projects
     projectFilter.members = {
       some: {
@@ -14,7 +19,7 @@ export const getDashboardService = async (user: any) => {
       },
     };
   }
-  if (user.role === "LEADERSHIP") {
+  if (user.role === ROLES.LEADERSHIP) {
     // Created OR Assigned projects
     projectFilter.OR = [
       {
