@@ -6,7 +6,6 @@ import { StatusCodes } from "http-status-codes";
 import {
   findAllUsersService,
   findUserByIdService,
-  findUserByProjectService,
   getUserByIdService,
   toggleUserService,
 } from "./user.service";
