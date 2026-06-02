@@ -19,6 +19,7 @@ import {
 import ApiResponse from "@/utils/ApiResponse";
 import { createProjectSchema } from "./project.validation";
 import { getLeadershipUsersService } from "../users/user.service";
+import { ROLES } from "@/common/utils/roles";
 
 export const getAllProjects = catchAsync(
   async (req: Request, res: Response) => {
@@ -123,7 +124,10 @@ export const createProjectWithDocuments = catchAsync(
     if (!createdById) {
       throw new ApiError(StatusCodes.UNAUTHORIZED, "Unauthorized user!");
     }
-    if (role !== "ADMIN" && (!files || files.length === 0)) {
+    if (
+      role !== ROLES.ADMIN ||
+      (role !== ROLES.SUPER_ADMIN && (!files || files.length === 0))
+    ) {
       throw new ApiError(
         StatusCodes.BAD_REQUEST,
         "At least one document is required",
