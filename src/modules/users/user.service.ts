@@ -1,7 +1,7 @@
 import { ROLES } from "@/common/utils/roles";
 import { prisma } from "@/db/prisma";
 import ApiError from "@/utils/ApiError";
-import { Prisma } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 import { StatusCodes } from "http-status-codes";
 
 export const findAllUsersService = async (
@@ -18,7 +18,7 @@ export const findAllUsersService = async (
     ...(isSuperAdmin
       ? {
           role: {
-            not: ROLES.SUPER_ADMIN,
+            not: Role.SUPER_ADMIN,
           },
         }
       : { addedById: addedByUser?.id }),
