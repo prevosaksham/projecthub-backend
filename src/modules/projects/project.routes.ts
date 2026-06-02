@@ -98,7 +98,7 @@ router.post(
 router.get(
   "/assignable-users",
   authMiddleware,
-  authorize("LEADERSHIP", "ADMIN"),
+  authorize(ROLES.LEADERSHIP, ROLES.ADMIN, ROLES.SUPER_ADMIN),
   getAssignableUsers,
 );
 

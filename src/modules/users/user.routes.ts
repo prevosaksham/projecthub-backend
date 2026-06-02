@@ -23,7 +23,7 @@ router.get(
 router.get(
   "/me",
   authMiddleware,
-  authorize(ROLES.ADMIN, ROLES.MANAGER, ROLES.LEADERSHIP),
+  authorize(ROLES.ADMIN, ROLES.MANAGER, ROLES.LEADERSHIP, ROLES.SUPER_ADMIN),
   findUserById,
 );
 router.get(

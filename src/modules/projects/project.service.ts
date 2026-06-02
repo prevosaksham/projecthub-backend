@@ -802,7 +802,10 @@ export const assignMembersToProjectServiceNew = async (
 export const getAssignableUsersService = async (currentUser: any) => {
   let roleFilter: Role[] = [];
 
-  if (currentUser.role === Role.ADMIN) {
+  if (
+    currentUser.role === Role.ADMIN ||
+    currentUser.role === Role.SUPER_ADMIN
+  ) {
     roleFilter = [Role.MANAGER];
   }
 
