@@ -161,12 +161,9 @@ export const getUserByIdService = async (userId: string) => {
       role: true,
       empId: true,
       mobileNumber: true,
-
-      // ✅ Assigned Projects
       assignedProjects: {
         where: {
           isDeleted: false,
-
           project: {
             isDeleted: false,
           },
@@ -251,4 +248,42 @@ export const toggleUserService = async (userId: string, isEnabled: boolean) => {
     isEnabled: updatedUser.isEnabled,
   };
   return responseData;
+};
+
+// *************************************ROLE DROPDOWN*******************************\
+
+export const getRoleService = async (user: any) => {
+  if (user.role === "SUPER_ADMIN") {
+    return [
+      {
+        label: "SUPER_ADMIN",
+        value: "SUPER_ADMIN",
+      },
+      {
+        label: "ADMIN",
+        value: "ADMIN",
+      },
+      {
+        label: "MANAGER",
+        value: "MANAGER",
+      },
+      {
+        label: "LEADERSHIP",
+        value: "LEADERSHIP",
+      },
+    ];
+  } else if (user.role === "ADMIN") {
+    return [
+      {
+        label: "MANAGER",
+        value: "MANAGER",
+      },
+      {
+        label: "LEADERSHIP",
+        value: "LEADERSHIP",
+      },
+    ];
+  } else {
+    return [{}];
+  }
 };

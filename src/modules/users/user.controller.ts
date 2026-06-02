@@ -6,6 +6,7 @@ import { StatusCodes } from "http-status-codes";
 import {
   findAllUsersService,
   findUserByIdService,
+  getRoleService,
   getUserByIdService,
   toggleUserService,
 } from "./user.service";
@@ -76,4 +77,15 @@ export const toggleUser = catchAsync(async (req: Request, res: Response) => {
   return res
     .status(StatusCodes.OK)
     .json(new ApiResponse(StatusCodes.OK, message, updatedUser));
+});
+
+export const getRoles = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, "Authentication required");
+  }
+  const roles = await getRoleService(user);
+  return res
+    .status(StatusCodes.OK)
+    .json(new ApiResponse(StatusCodes.OK, "Roles fetched successfully", roles));
 });

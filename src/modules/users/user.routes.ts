@@ -3,6 +3,7 @@ import {
   findAllUsers,
   findUserById,
   findUserProjects,
+  getRoles,
   toggleUser,
 } from "./user.controller";
 import authMiddleware from "@/middlewares/auth.middleware";
@@ -27,5 +28,11 @@ router.get(
   findUserProjects,
 );
 router.patch("/:id/toggle", authMiddleware, authorize("ADMIN"), toggleUser);
+router.get(
+  "/roles",
+  authMiddleware,
+  authorize(ROLES.ADMIN, ROLES.SUPER_ADMIN),
+  getRoles,
+);
 
 export default router;
