@@ -15,7 +15,13 @@ export const findAllUsersService = async (
 
   const whereClause = {
     isDeleted: false,
-    ...(isSuperAdmin ? {} : { addedById: addedByUser?.id }),
+    ...(isSuperAdmin
+      ? {
+          role: {
+            not: ROLES.SUPER_ADMIN,
+          },
+        }
+      : { addedById: addedByUser?.id }),
     ...(search && {
       OR: [
         {
