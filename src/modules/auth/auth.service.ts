@@ -15,14 +15,28 @@ export const createUserService = async (
 ) => {
   const existingUser = await prisma.user.findFirst({
     where: {
-      OR: [{ email: data.email }, { empId: data.empId }],
+      OR: [
+        { email: data.email },
+        { empId: data.empId },
+        { mobileNumber: data.mobileNumber },
+      ],
     },
   });
   if (existingUser) {
-    throw new ApiError(
-      StatusCodes.CONFLICT,
-      "User with this email or employee id already exists!",
-    );
+    if (existingUser.email === data.email) {
+      throw new ApiError(StatusCodes.CONFLICT, "Email is already registered.");
+    }
+
+    if (existingUser.empId === data.empId) {
+      throw new ApiError(StatusCodes.CONFLICT, "Employee ID already exists.");
+    }
+
+    if (existingUser.mobileNumber === data.mobileNumber) {
+      throw new ApiError(
+        StatusCodes.CONFLICT,
+        "Mobile number is already registered.",
+      );
+    }
   }
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(data.password, salt);
