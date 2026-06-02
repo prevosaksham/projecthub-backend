@@ -33,26 +33,26 @@ const router = Router();
 router.get(
   "/projects",
   authMiddleware,
-  authorize("ADMIN", "MANAGER", ROLES.LEADERSHIP),
+  authorize(ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.MANAGER, ROLES.LEADERSHIP),
   getAllProjects,
 );
 router.delete(
   "/:id/delete",
   authMiddleware,
-  authorize("ADMIN", ROLES.LEADERSHIP),
+  authorize(ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.LEADERSHIP),
   deleteProject,
 );
 router.get(
   "/:id/project",
   authMiddleware,
-  authorize("MANAGER", ROLES.ADMIN, ROLES.LEADERSHIP),
+  authorize(ROLES.MANAGER, ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.LEADERSHIP),
   getProjectById,
 );
 
 router.get(
   "/user/:userId/incomplete-projects/count",
   authMiddleware,
-  authorize("ADMIN", "MANAGER", ROLES.LEADERSHIP),
+  authorize(ROLES.ADMIN, ROLES.MANAGER, ROLES.LEADERSHIP),
   getIncompleteProjectCountForUser,
 );
 
@@ -60,7 +60,7 @@ router.get(
 router.post(
   "/create-project",
   authMiddleware,
-  authorize(ROLES.ADMIN, ROLES.LEADERSHIP),
+  authorize(ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.LEADERSHIP),
   upload.array("documents", 10),
   parseProjectBody,
   validate(createProjectWithDocumentsSchema),
@@ -70,7 +70,7 @@ router.post(
 router.patch(
   "/complete-project/:id",
   authMiddleware,
-  authorize(ROLES.ADMIN, ROLES.MANAGER),
+  authorize(ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.MANAGER),
   upload.array("documents", 10),
   parseProjectBody,
   validate(completeProjectWithDocumentsSchema),
@@ -81,7 +81,7 @@ router.patch(
 router.patch(
   "/update-project/:projectId",
   authMiddleware,
-  authorize("MANAGER", ROLES.LEADERSHIP, ROLES.ADMIN),
+  authorize(ROLES.MANAGER, ROLES.LEADERSHIP, ROLES.ADMIN, ROLES.SUPER_ADMIN),
   upload.array("documents", 10),
   parseProjectBody,
   validate(updateProjectWithDocumentsSchema),
@@ -91,7 +91,7 @@ router.patch(
 router.post(
   "/:id/assign",
   authMiddleware,
-  authorize("LEADERSHIP", ROLES.ADMIN),
+  authorize(ROLES.LEADERSHIP, ROLES.ADMIN, ROLES.SUPER_ADMIN),
   assignUsersToProject,
 );
 
@@ -105,7 +105,7 @@ router.get(
 router.post(
   "/:projectId/users/:userId",
   authMiddleware,
-  authorize("LEADERSHIP", "ADMIN"),
+  authorize(ROLES.LEADERSHIP, ROLES.ADMIN, ROLES.SUPER_ADMIN),
   deassignUserFromProject,
 );
 
@@ -113,11 +113,16 @@ router.post(
 router.post(
   "/:id/create-remark",
   authMiddleware,
-  authorize("MANAGER"),
+  authorize(ROLES.MANAGER, ROLES.ADMIN, ROLES.SUPER_ADMIN),
   validate(projectRemarkSchema),
   createProjectRemark,
 );
 
-router.patch("/:id/toggle", authMiddleware, authorize("ADMIN"), toggleProject);
+router.patch(
+  "/:id/toggle",
+  authMiddleware,
+  authorize(ROLES.ADMIN, ROLES.SUPER_ADMIN),
+  toggleProject,
+);
 
 export default router;

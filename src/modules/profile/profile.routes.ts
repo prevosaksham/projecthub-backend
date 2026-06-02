@@ -17,7 +17,7 @@ const router = Router();
 router.get(
   "/me",
   authMiddleware,
-  authorize(ROLES.ADMIN, ROLES.MANAGER, ROLES.LEADERSHIP),
+  authorize(ROLES.ADMIN, ROLES.MANAGER, ROLES.SUPER_ADMIN, ROLES.LEADERSHIP),
   getProfile,
 );
 
@@ -26,7 +26,7 @@ router.get(
 router.patch(
   "/edit-profile",
   authMiddleware,
-  authorize(ROLES.MANAGER),
+  authorize(ROLES.MANAGER, ROLES.ADMIN, ROLES.LEADERSHIP, ROLES.SUPER_ADMIN),
   validate(editProfileSchema),
   editProfile,
 );
