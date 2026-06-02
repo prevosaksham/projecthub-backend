@@ -34,7 +34,7 @@ enum ProjectPriority {
 // ================== USER MODEL ==================
 model User {
   id          String @id @default(dbgenerated("gen_random_uuid()"))
-  name        String
+  name        String @db.VarChar(80)
   email       String @unique
   role        Role   @default(MANAGER)
   password    String
