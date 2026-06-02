@@ -256,10 +256,6 @@ export const getRoleService = async (user: any) => {
   if (user.role === "SUPER_ADMIN") {
     return [
       {
-        label: "SUPER_ADMIN",
-        value: "SUPER_ADMIN",
-      },
-      {
         label: "ADMIN",
         value: "ADMIN",
       },
