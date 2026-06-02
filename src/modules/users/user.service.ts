@@ -39,24 +39,6 @@ export const findAllUsersService = async (
         role: true,
         mobileNumber: true,
         isEnabled: true,
-
-        // createdProjects: {
-        //   select: {
-        //     id: true,
-        //     name: true,
-        //     description: true,
-        //     status: true,
-        //     priority: true,
-        //     clientName: true,
-        //     startDate: true,
-        //     endDate: true,
-        //     devUrl: true,
-        //     prodUrl: true,
-        //     uatUrl: true,
-        //     developers: true,
-        //   },
-        //   take: 5,
-        // },
       },
     }),
 

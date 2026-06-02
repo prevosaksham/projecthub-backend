@@ -13,21 +13,31 @@ import { ROLES } from "@/common/utils/roles";
 
 const router = Router();
 
-router.get("/", authMiddleware, authorize("ADMIN"), findAllUsers);
+router.get(
+  "/",
+  authMiddleware,
+  authorize(ROLES.SUPER_ADMIN, ROLES.ADMIN),
+  findAllUsers,
+);
 
 router.get(
   "/me",
   authMiddleware,
-  authorize("ADMIN", "MANAGER", ROLES.LEADERSHIP),
+  authorize(ROLES.ADMIN, ROLES.MANAGER, ROLES.LEADERSHIP),
   findUserById,
 );
 router.get(
   "/:id/projects",
   authMiddleware,
-  authorize("ADMIN"),
+  authorize(ROLES.ADMIN, ROLES.SUPER_ADMIN),
   findUserProjects,
 );
-router.patch("/:id/toggle", authMiddleware, authorize("ADMIN"), toggleUser);
+router.patch(
+  "/:id/toggle",
+  authMiddleware,
+  authorize(ROLES.ADMIN, ROLES.SUPER_ADMIN),
+  toggleUser,
+);
 router.get(
   "/roles",
   authMiddleware,
