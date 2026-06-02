@@ -822,6 +822,9 @@ export const getAssignableUsersService = async (currentUser: any) => {
     where: {
       isDeleted: false,
       isEnabled: true,
+      id: {
+        not: currentUser.id,
+      },
       role: {
         in: roleFilter,
       },
