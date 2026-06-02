@@ -4,19 +4,16 @@ import authMiddleware from "@/middlewares/auth.middleware";
 
 import authorize from "@/middlewares/role.middleware";
 
-import { getDashboard }
-  from "./dashboard.controller";
+import { getDashboard } from "./dashboard.controller";
+import { ROLES } from "@/common/utils/roles";
 
 const router = Router();
 
 router.get(
   "/",
   authMiddleware,
-  authorize(
-    "ADMIN",
-    "MANAGER"
-  ),
-  getDashboard
+  authorize(ROLES.SUPER_ADMIN, "ADMIN", "MANAGER"),
+  getDashboard,
 );
 
 export default router;
