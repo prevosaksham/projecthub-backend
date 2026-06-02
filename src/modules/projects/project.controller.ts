@@ -125,8 +125,9 @@ export const createProjectWithDocuments = catchAsync(
       throw new ApiError(StatusCodes.UNAUTHORIZED, "Unauthorized user!");
     }
     if (
-      role !== ROLES.ADMIN ||
-      (role !== ROLES.SUPER_ADMIN && (!files || files.length === 0))
+      role !== ROLES.ADMIN &&
+      role !== ROLES.SUPER_ADMIN &&
+      (!files || files.length === 0)
     ) {
       throw new ApiError(
         StatusCodes.BAD_REQUEST,
