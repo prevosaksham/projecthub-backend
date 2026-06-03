@@ -42,13 +42,12 @@ const fileFilter = (
     "image/png",
     "image/jpeg",
     "image/jpg",
-    // Excel
-    "application/vnd.ms-excel", // .xls
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
-
-    // CSV
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "text/csv",
     "application/csv",
+    "application/vnd.ms-powerpoint", // .ppt
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation", // .pptx
   ];
 
   if (allowedTypes.includes(file.mimetype)) {
