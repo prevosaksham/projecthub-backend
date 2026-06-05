@@ -112,7 +112,7 @@ export const getDashboardService = async (user: any) => {
     return {
       month,
       active: active.length,
-      completedProject: completed.length,
+      completed: completed.length,
       activeProject: active,
       completedProjects: completed,
     };
