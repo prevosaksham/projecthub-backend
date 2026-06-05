@@ -61,6 +61,7 @@ export const getDashboardService = async (user: any) => {
     where: projectFilter,
 
     select: {
+      name: true,
       startDate: true,
       endDate: true,
       status: true,
@@ -94,18 +95,26 @@ export const getDashboardService = async (user: any) => {
         p.status !== "COMPLETED" &&
         p.status !== "CANCELLED"
       );
-    }).length;
+    });
 
-    const completed = projects.filter((p: any) => {
-      const endMonth = new Date(p?.endDate).getMonth();
+    const completed = projects
+      .filter((p: any) => {
+        const endMonth = new Date(p?.endDate).getMonth();
 
-      return endMonth === index && p.status === "COMPLETED";
-    }).length;
+        return endMonth === index && p.status === "COMPLETED";
+      })
+      .map((p: any) => ({
+        projectName: p.name,
+        startDate: p.startDate,
+        endDate: p.endDate,
+      }));
 
     return {
       month,
-      active,
-      completed,
+      active: active.length,
+      completedProject: completed.length,
+      activeProject: active,
+      completedProjects: completed,
     };
   });
 
