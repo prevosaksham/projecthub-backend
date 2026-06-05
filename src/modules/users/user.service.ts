@@ -9,6 +9,7 @@ export const findAllUsersService = async (
   page = 1,
   limit = 10,
   search?: string,
+  role?: string,
 ) => {
   const skip = (page - 1) * limit;
   const isSuperAdmin = addedByUser?.role === ROLES.SUPER_ADMIN;
@@ -22,6 +23,9 @@ export const findAllUsersService = async (
           },
         }
       : { addedById: addedByUser?.id }),
+    ...(role && {
+      role: role as Role,
+    }),
     ...(search && {
       OR: [
         {

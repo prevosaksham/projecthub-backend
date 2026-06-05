@@ -21,11 +21,13 @@ export const findAllUsers = catchAsync(async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const search = req.query.search as string | undefined;
+  const role = req.query.role as string | undefined;
   const newProject = await findAllUsersService(
     addedByUser,
     page,
     limit,
     search,
+    role,
   );
   return res
     .status(StatusCodes.OK)
