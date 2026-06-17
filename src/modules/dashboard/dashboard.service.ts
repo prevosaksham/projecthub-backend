@@ -1,7 +1,10 @@
 import { ROLES } from "@/common/utils/roles";
 import { prisma } from "@/db/prisma";
 
-export const getDashboardService = async (user: any) => {
+export const getDashboardService = async (
+  user: any,
+  year: number = new Date().getFullYear(),
+) => {
   // BASE FILTER
   const projectFilter: any = {
     isDeleted: false,
@@ -85,9 +88,18 @@ export const getDashboardService = async (user: any) => {
 
   const graphData = months.map((month, index) => {
     const active = projects.filter((p: any) => {
-      const startMonth = new Date(p.startDate).getMonth();
+      const start = new Date(p.startDate);
+      const end = new Date(p?.endDate);
 
-      const endMonth = new Date(p?.endDate).getMonth();
+      const startYear = start.getFullYear();
+      const endYear = end.getFullYear();
+
+      // project selected year ko overlap karna chahiye
+      if (year < startYear || year > endYear) return false;
+
+      // months ko selected year ke andar clamp karo
+      const startMonth = year === startYear ? start.getMonth() : 0;
+      const endMonth = year === endYear ? end.getMonth() : 11;
 
       return (
         index >= startMonth &&
@@ -100,8 +112,9 @@ export const getDashboardService = async (user: any) => {
     const completed = projects
       .filter((p: any) => {
         const endMonth = new Date(p?.endDate).getMonth();
+        const endYear = new Date(p?.endDate).getFullYear();
 
-        return endMonth === index && p.status === "COMPLETED";
+        return endMonth === index && endYear === year && p.status === "COMPLETED";
       })
       .map((p: any) => ({
         projectName: p.name,

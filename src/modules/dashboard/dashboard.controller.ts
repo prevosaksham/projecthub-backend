@@ -6,7 +6,8 @@ import { StatusCodes } from "http-status-codes";
 import { getDashboardService } from "./dashboard.service";
 
 export const getDashboard = catchAsync(async (req: Request, res: Response) => {
-  const data = await getDashboardService(req.user);
+  const year = req.query.year ? Number(req.query.year) : new Date().getFullYear();
+  const data = await getDashboardService(req.user, year);
   return res
     .status(StatusCodes.OK)
     .json(
