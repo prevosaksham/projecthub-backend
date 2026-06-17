@@ -43,11 +43,13 @@ export const getDashboardService = async (
     where: projectFilter,
   });
 
-  // ACTIVE PROJECTS
+  // ACTIVE PROJECTS (jo COMPLETED ya CANCELLED nahi hai)
   const activeProjects = await prisma.project.count({
     where: {
       ...projectFilter,
-      status: "IN_PROGRESS",
+      status: {
+        notIn: ["COMPLETED", "CANCELLED"],
+      },
     },
   });
 
@@ -114,7 +116,9 @@ export const getDashboardService = async (
         const endMonth = new Date(p?.endDate).getMonth();
         const endYear = new Date(p?.endDate).getFullYear();
 
-        return endMonth === index && endYear === year && p.status === "COMPLETED";
+        return (
+          endMonth === index && endYear === year && p.status === "COMPLETED"
+        );
       })
       .map((p: any) => ({
         projectName: p.name,
