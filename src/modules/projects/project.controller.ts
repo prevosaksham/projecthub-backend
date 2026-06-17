@@ -216,6 +216,8 @@ export const updateProjectWithDocuments = catchAsync(
       throw new ApiError(StatusCodes.BAD_REQUEST, "Nothing to update");
     }
     const assignedUsers = req.body.assignedUsers || [];
+    // undefined => existing documents ko chhedo mat; array (empty bhi) => keep-list
+    const existingDocuments = req.body.existingDocuments;
     console.log("assignedUsers:", req.body.assignedUsers);
     console.log("type:", typeof req.body.assignedUsers);
     const result = await updateProjectWithDocumentsService(
@@ -224,6 +226,7 @@ export const updateProjectWithDocuments = catchAsync(
       files,
       updatedById,
       assignedUsers,
+      existingDocuments,
     );
 
     return res

@@ -101,6 +101,8 @@ export const createProjectWithDocumentsSchema = z.object({
 export const updateProjectWithDocumentsSchema = z.object({
   project: updateProjectSchema,
   assignedUsers: z.array(z.string()).optional(),
+  // jo existing documents rakhne hain unke IDs; jo isme nahi wo soft-delete honge
+  existingDocuments: z.array(z.string()).optional(),
 });
 
 export const completeProjectSchema = z

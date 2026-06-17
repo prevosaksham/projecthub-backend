@@ -26,6 +26,9 @@ export const parseProjectBody = (
     if (req.body.assignedUsers) {
       req.body.assignedUsers = JSON.parse(req.body.assignedUsers);
     }
+    if (req.body.existingDocuments) {
+      req.body.existingDocuments = JSON.parse(req.body.existingDocuments);
+    }
     if (req.body.project && typeof req.body.project === "object") {
       Object.keys(req.body.project).forEach((key) => {
         if (req.body.project[key] === "") {

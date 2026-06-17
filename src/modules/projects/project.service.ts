@@ -413,6 +413,8 @@ export const updateProjectWithDocumentsService = async (
   files: Express.Multer.File[],
   updatedById: string,
   assignedUsers: string[] = [],
+  // undefined => existing documents ko chhedo mat; array (empty bhi) => sirf inhe rakho
+  keepDocumentIds?: string[],
 ) => {
   try {
     return await prisma.$transaction(async (tx) => {
@@ -436,7 +438,14 @@ export const updateProjectWithDocumentsService = async (
 
       console.log("MERGED PROJECT:", mergedProject);
 
-      const hasDocs = existingProject.documents.length > 0 || files.length > 0;
+      // update ke baad jitne documents bachenge unke hisaab se hasDocs
+      const keptDocsCount =
+        keepDocumentIds === undefined
+          ? existingProject.documents.filter((d: any) => !d.isDeleted).length
+          : existingProject.documents.filter(
+              (d: any) => !d.isDeleted && keepDocumentIds.includes(d.id),
+            ).length;
+      const hasDocs = keptDocsCount > 0 || files.length > 0;
       const hasAssignedUsers =
         existingProject.members.length > 0 || assignedUsers.length > 0;
 
@@ -468,10 +477,25 @@ export const updateProjectWithDocumentsService = async (
       } catch (err) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Failed to update project");
       }
-      let documents: any[] = [];
+      // ================= DOCUMENTS: keep-list + add new =================
+      // keepDocumentIds diya gaya ho to: jo list me nahi wo soft-delete
+      // (empty array => saare existing documents soft-delete)
+      // undefined => existing documents ko chhedo mat (backward compatible)
+      if (keepDocumentIds !== undefined) {
+        await tx.document.updateMany({
+          where: {
+            projectId,
+            isDeleted: false,
+            id: { notIn: keepDocumentIds },
+          },
+          data: { isDeleted: true },
+        });
+      }
+
+      // nayi files add karo
       if (files?.length) {
         try {
-          documents = await Promise.all(
+          await Promise.all(
             files.map((file) =>
               tx.document.create({
                 data: {
@@ -492,6 +516,11 @@ export const updateProjectWithDocumentsService = async (
           );
         }
       }
+
+      // final document list (jo bache + naye add hue)
+      const documents = await tx.document.findMany({
+        where: { projectId, isDeleted: false },
+      });
 
       // ================= ASSIGN USERS =================
       if (assignedUsers.length > 0) {
@@ -609,6 +638,12 @@ export const updateProjectWithDocumentsService = async (
           email: m.assignedTo.email,
         })),
       };
+    },
+    {
+      // remote DB pe sequential queries ki latency jud ke default 5s cross kar
+      // rahi thi -> transaction timeout (aur maxWait) badha diya
+      maxWait: 10000,
+      timeout: 30000,
     });
   } catch (error) {
     if (error instanceof ApiError) {
